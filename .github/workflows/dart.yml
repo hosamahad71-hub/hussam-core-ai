@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          path: hussam-backup
 
       # خطوة أتمتة ذكية: فك ضغط ملف المشروع تلقائياً داخل السيرفر
       - name: Unzip project files
@@ -38,3 +40,4 @@ jobs:
       - name: Analyze project source
         working-directory: hussam-backup
         run: flutter analyze
+        Fix Flutter workflow path
