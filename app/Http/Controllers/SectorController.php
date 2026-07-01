@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sector;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support - Use Log; // لتسجيل عمليات المراقبة الذكية للـ Observability
+use Illuminate\Support\Facades\Log; // تم تصحيح مسار الحزمة هنا
 
 class SectorController extends Controller
 {
@@ -14,7 +14,7 @@ class SectorController extends Controller
     public function index(): JsonResponse
     {
         try {
-            // جلب القطاعات المفعلة مع خدماتها دفعة واحدة لتقليل الضغط على السيرفر (Eager Loading)
+            // جلب القطاعات المفعلة مع خدماتها دفعة واحدة (Eager Loading)
             $matrixData = Sector::with('services')
                 ->where('is_enabled', true)
                 ->get();
@@ -29,7 +29,7 @@ class SectorController extends Controller
 
         } catch (\Exception $e) {
             // تسجيل الخطأ فوراً في نظام الـ Observability للمنصة
-            error_log("Matrix Fetch Error: " . $e->getMessage());
+            Log::error("Matrix Fetch Error: " . $e->getMessage());
 
             return response()->json([
                 'status' => 'error',
