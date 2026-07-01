@@ -17,6 +17,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # خطوة أتمتة ذكية: فك ضغط ملف المشروع تلقائياً داخل السيرفر
+      - name: Unzip project files
+        run: |
+          if [ -f hussam_ready.zip ]; then
+            unzip -o hussam_ready.zip -d .
+          fi
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
