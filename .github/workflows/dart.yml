@@ -21,7 +21,8 @@ jobs:
       - name: Unzip project files
         run: |
           if [ -f hussam_ready.zip ]; then
-            unzip -o hussam_ready.zip -d .
+            mkdir -p hussam-backup
+            unzip -o hussam_ready.zip -d hussam-backup
           fi
 
       - name: Set up Flutter
@@ -31,7 +32,9 @@ jobs:
           cache: true
 
       - name: Install dependencies
+        working-directory: hussam-backup
         run: flutter pub get
 
       - name: Analyze project source
+        working-directory: hussam-backup
         run: flutter analyze
