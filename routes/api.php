@@ -1,13 +1,15 @@
-<?php
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SectorController;
+use App\Http\Controllers\TransactionController;
 /*
 |--------------------------------------------------------------------------
 
-| Hussam Core AI - API Routes Matrix
+| Hussam Core AI - API Matrix Routes (V1)
 | :--- |
-| هنا نحدد المنافذ البرمجية الآمنة التي يتصل بها تطبيق الـ Flutter
-| لجلب مصفوفة البيانات والقطاعات بشكل فوري وبأعلى كفاءة.
 
 */
-Route::get('/v1/core-matrix', [SectorController::class, 'index']);
+Route::prefix('v1/matrix')->group(function () {
+    // مسار جلب كشف الحساب المالي اللحظي للتجار والعملاء
+    Route::get('/ledger/{userId}', [TransactionController::class, 'index']);
+    
+    // مسار تسجيل عملية مالية جديدة (سحب / إيداع)
+    Route::post('/ledger/transaction', [TransactionController::class, 'store']);
+});
