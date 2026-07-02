@@ -1,33 +1,35 @@
 import 'package:flutter/material.dart';
-import '../../features/auth/login_page.dart';
-import '../../features/marketplace/presentation/home_dashboard.dart';
-import '../../features/merchant/presentation/merchant_dashboard.dart';
+import '../../../main.dart'; // استدعاء شاشة لوحة التحكم المركزية الفاخرة Hussam Core AI
 
-/// المطور: Hussam Core AI Engine
-/// الوصف: نظام التحكم المركزي بمسارات التنقل والتوجيه بناءً على الهوية (Role-Based Router)
+/// المحرك: Hussam Core AI Engine
+/// الوحدة: نظام التوجيه المركزي لملفات واجهات المستخدم (Map Based Router)
 class AppRouter {
+  
   // تعريف أسماء المسارات الثابتة في النظام
+  static const String coreHub = '/';
   static const String login = '/login';
   static const String customerDashboard = '/customer_dashboard';
   static const String merchantDashboard = '/merchant_dashboard';
 
-  /// خريطة المسارات لربط المسميات بالواجهات الحقيقية
+  /// مصفوفة الخرائط لربط المسارات بالواجهات الحية
   static Map<String, WidgetBuilder> get routes {
     return {
-      login: (context) => const LoginPage(),
-      customerDashboard: (context) => const HomeDashboard(),
-      merchantDashboard: (context) => const MerchantDashboard(),
+      // ربط المسار الرئيسي بلوحة التحكم الفاخرة التي يترقبها الجميع
+      coreHub: (context) => const MainControlCenterScreen(),
+      
+      // مسارات احتياطية آمنة تمنع انهيار التطبيق أثناء التجربة الحية
+      login: (context) => const Scaffold(body: Center(child: Text('Login Page', style: TextStyle(color: Colors.white)))),
+      customerDashboard: (context) => const Scaffold(body: Center(child: Text('Customer Dashboard', style: TextStyle(color: Colors.white)))),
+      merchantDashboard: (context) => const Scaffold(body: Center(child: Text('Merchant Dashboard', style: TextStyle(color: Colors.white)))),
     };
   }
 
-  /// الدالة الذكية للتوجيه الفوري بناءً على دور المستخدم (Role) القادم من الـ Backend
-  static void navigateToRoleDashboard(BuildContext context, String role) {
+  /// دالة التوجيه الذكي بناءً على صلاحيات ودور المستخدم
+  static void navigateToDashboard(BuildContext context, String role) {
     if (role == 'merchant' || role == 'vendor' || role == 'admin') {
-      // توجيه فوري إلى لوحة تحكم التجار وإغلاق صفحة الدخول لمنع الرجوع
-      Navigator.pushNamedAndRemoveUntil(context, merchantDashboard, (route) => false);
+      Navigator.pushReplacementNamed(context, merchantDashboard);
     } else {
-      // توجيه تلقائي لعموم المستخدمين إلى المتجر الرئيسي
-      Navigator.pushNamedAndRemoveUntil(context, customerDashboard, (route) => false);
+      Navigator.pushReplacementNamed(context, customerDashboard);
     }
   }
 }
