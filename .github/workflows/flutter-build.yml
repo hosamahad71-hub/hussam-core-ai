@@ -1,0 +1,71 @@
+name: Hussam Platform Cloud Build
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java Environment
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: actions/subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build Debug APK
+        run: flutter build apk --debug
+
+      - name: Upload Output APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: hussam-app-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+    EOF
+
+git add .github/workflows/flutter-build.yml
+git commit -m "ci: add github actions workflow for cloud build"
+git push origin main
+
+name: Hussam Platform Cloud Build                                                               on:
+  push:                                             branches: [ main, master ]                  
+jobs:                                             build:                                            runs-on: ubuntu-latest
+
+echo "bmFtZTogSHVzc2FtIFBsYXRmb3JtIENsb3VkIEJ1aWxkCm9uOgogIHB1c2g6CiAgICBicmFuY2hlczogWyBtYWluLCBtYXN0ZXIgXQpqb2JzOgogIGJ1aWxkOgogICAgcnVucy1vbjogdWJ1bnR1LWxhdGVzdAogICAgc3RlcHM6CiAgICAgIC0gbmFtZTogQ2hlY2tvdXQgQ29kZQogICAgICAgIHVzZXM6IGFjdGlvbnMvY2hlY2tvdXRAdjQKICAgICAgLSBuYW1lOiBTZXR1cCBKYXZhIEVudmlyb25tZW50CiAgICAgICAgdXNlczogYWN0aW9ucy9zZXR1cC1qYXZhQHY0CiAgICAgICAgd2l0aDoKICAgICAgICAgIGRpc3RyaWJ1dGlvbjogJ3RlbXVyaW4nCiAgICAgICAgICBqYXZhLXZlcnNpb246ICcxNycKICAgICAgLSBuYW1lOiBTZXR1cCBGbHV0dGVyCiAgICAgICAgdXNlczogYWN0aW9ucy9zdWJvc2l0by9mbHV0dGVyLWFjdGlvbkB2MgogICAgICAgIHdpdGg6CiAgICAgICAgICBjaGFubmVsOiAnc3RhYmxlJwogICAgICAtIG5hbWU6IEluc3RhbGwgRGVwZW5kZW5jaWVzCiAgICAgICAgcnVuOiBmbHV0dGVyIHB1YiBnZXQKICAgICAgLSBuYW1lOiBCdWlsZCBEZWJ1ZyBBUEsKICAgICAgICBydW46IGZsdXR0ZXIgYnVpbGQgYXBrIC0tZGVidWcKICAgICAgLSBuYW1lOiBVcGxvYWQgT3V0cHV0IEFQSwogICAgICAgIHVzZXM6IGFjdGlvbnMvdXBsb2FkLWFydGlmYWN0QHY0CiAgICAgICAgd2l0aDoKICAgICAgICAgIG5hbWU6IGh1c3NhbS1hcHAtZGVidWctYXBrCiAgICAgICAgICBwYXRoOiBidWlsZC9hcHAvb3V0cHV0cy9mbHV0dGVyLWFway9hcHAtZGVidWcuYXBr" | base64 -d > .github/workflows/flutter-build.yml && git add .github/workflows/flutter-build.yml && git commit --amend -m "ci: deploy bulletproof yaml layout" && git push origin main --force
+
+cat .github/workflows/flutter-build.yml
+
+cd /data/data/com.termux/files/home && composer create-project laravel/laravel hussam-api --prefer-dist && cd hussam-api
+
+cat << 'EOF' > routes/api.php
+<?php
+use Illuminate\Support\Facades\Route;
+/*
+|--------------------------------------------------------------------------
+
+| Hussam Platform Core APIs
+| :--- |
+
+*/
+Route:get('/v1/status', function () {
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Hussam Platform API Hub is fully operational',
+        'version' => '1.0.0',
+        'environment' => app()->environment(),
+        'server_time' => now()->toIso8601String()
+    ], 200);
+});
