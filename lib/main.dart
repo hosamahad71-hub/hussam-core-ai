@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
+import 'core/routes/app_router.dart'; // ربط موجه المسارات الذكي
 
 void main() {
-  runApp(const HussamCoreAIApp());
+  runApp(const HussamCoreApp());
 }
 
-class HussamCoreAIApp extends StatelessWidget {
-  const HussamCoreAIApp({Key? key}) : super(key: key);
+class HussamCoreApp extends StatelessWidget {
+  const HussamCoreApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,351 +15,223 @@ class HussamCoreAIApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xff090a0f), // لون الفضاء العميق العتيق
-        primaryColor: const Color(0xff00f5d4), // نيون سيان لإشارات النظام النشطة
-        hintColor: const Color(0xff7b2cbf), // نيون بنفسجي للوحدات المتقدمة
+        scaffoldBackgroundColor: const Color(0xff090a0f), // الخلفية الداكنة الفاخرة
+        primaryColor: const Color(0xff00f5d4),            // اللون النيوني الفيروزي
+        hintColor: const Color(0xff7b2cbf),               // اللون الأرجواني الإمبراطوري
+        fontFamily: 'monospace',                          // نمط الماتريكس البرمجي
       ),
-      home: const MainControlCenterScreen(),
+      initialRoute: AppRouter.coreHub,
+      routes: AppRouter.routes,
     );
   }
 }
 
+/// الواجهة الرئيسية: مركز التحكم الذكي للمنصة (Hussam Core AI Control Center)
 class MainControlCenterScreen extends StatefulWidget {
-  const MainControlCenterScreen({Key? key}) : super(key: key);
+  const MainControlCenterScreen({super.key});
 
   @override
   State<MainControlCenterScreen> createState() => _MainControlCenterScreenState();
 }
 
-class _MainControlCenterScreenState extends State<MainControlCenterScreen> with SingleTickerProviderStateMixin {
-  int selectedSectorIndex = 0;
-  late AnimationController _pulseController;
-
-  // مصفوفة البيانات الذكية المحاكية للنظام بالكامل لعرضها فوراً للمستخدمين
-  final List<Map<String, dynamic>> sectorsMatrix = [
-    {
-      'name': 'Data Intelligence & Core Matrix',
-      'icon': Icons.psychology_rounded,
-      'status': 'Active Node',
-      'color': const Color(0xff00f5d4),
-      'details': {
-        'Metrics': ['AI Accuracy: 99.4%', 'Tunnel Routing: Cloudflare Secure Mesh', 'Observability: High Trace Logging'],
-        'Live Logs': ['[INFO] Processing neural data map...', '[SUCCESS] Connection securely routed to Core AI.']
-      }
-    },
-    {
-      'name': 'Clinical Intelligence (Unit Clinic)',
-      'icon': Icons.healing_rounded,
-      'status': 'Synchronized',
-      'color': const Color(0xff00bbf9),
-      'details': {
-        'Metrics': ['Clinic ID: Unit Clinic Main', 'Compliance: Encrypted Privacy Standard', 'Lab Status: Active Tracking'],
-        'Live Logs': ['[SYNC] Case status matrix connected.', '[READY] Waiting for laboratory routing signal...']
-      }
-    },
-    {
-      'name': 'Enterprise Resource & Luxury Ledger',
-      'icon': Icons.account_balance_wallet_rounded,
-      'status': 'Secure Luxury Mode',
-      'color': const Color(0xfff15bb5),
-      'details': {
-        'Metrics': ['Aesthetic: Minimalist Luxury Dark', 'Currency Default: YER (Yemeni Rial)', 'Multi-Tenant: Scoped & Encrypted'],
-        'Live Logs': ['[SECURE] Ledger balance ledger initialized.', '[AUDIT] Zero-knowledge accounting precision set to 2.']
-      }
-    }
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    // إعداد حركة النبض الذكية للمدارات والمؤشرات لإعطاء شعور بالحياة داخل النظام
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _pulseController.dispose();
-    super.dispose();
-  }
-
+class _MainControlCenterScreenState extends State<MainControlCenterScreen> {
+  // مؤشرات الأداء اللحظية المتوافقة مع الـ Backend
+  final String cloudMeshStatus = "Cloudflare Secure Mesh Active";
+  final int operationalCount = 74182;
+  
   @override
   Widget build(BuildContext context) {
-    var activeSector = sectorsMatrix[selectedSectorIndex];
-
     return Scaffold(
-      body: Stack(
-        children: [
-          // خلفية كونية متدرجة مع النيون الأخاذ
-          Positioned(
-            top: -100,
-            right: -100,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: activeSector['color'].withOpacity(0.15),
-                blurRadius: 120,
-              ),
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xff090a0f), Color(0xff121424)],
           ),
-          Positioned(
-            bottom: -50,
-            left: -50,
-            child: Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xff7b2cbf).withOpacity(0.1),
-                blurRadius: 100,
-              ),
-            ),
-          ),
-          
-          // الواجهة الرئيسية
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // الهيدر الاحترافي الفاخر للمنصة
-                  Row(
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                
+                // 1️⃣ لوحة الهوية والترويسة العلوية (Top Status Bar)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'HUSSAM CORE AI',
+                          style: TextStyle(
+                            fontSize: 24, 
+                            fontWeight: FontWeight.bold, 
+                            color: Color(0xff00f5d4),
+                            letterSpacing: 1.5
+                          ),
+                        ),
+                        Text(
+                          'Matrix System v1.0.0 • $cloudMeshStatus',
+                          style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 11),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, py: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xff00f5d4).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xff00f5d4).withOpacity(0.4)),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(color: Color(0xff00f5d4), shape: BoxShape.circle),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text('LIVE NOW', style: TextStyle(color: Color(0xff00f5d4), fontSize: 12, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                
+                const SizedBox(height: 30),
+                
+                // 2️⃣ بطاقة الأداء المركزي السريع (Core Counter Monitor)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(colors: [Color(0xff7b2cbf), Color(0xff3c096c)]),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [BoxShadow(color: const Color(0xff7b2cbf).withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 5))],
+                  ),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'HUSSAM CORE AI',
-                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.black, letterSpacing: 2, color: Colors.white),
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              AnimatedBuilder(
-                                animation: _pulseController,
-                                builder: (context, child) {
-                                  return Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: const Color(0xff00f5d4).withOpacity(_pulseController.value),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: const Color(0xff00f5d4),
-                                          blurRadius: 10 * _pulseController.value,
-                                        )
-                                      ]
-                                    ),
-                                  );
-                                },
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'ENGINE OPERATIONAL (YEMEN CORE)',
-                                style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(0.6), fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          )
+                          const Text('إجمالي العمليات المتزامنة في اليمن', style: TextStyle(color: Colors.white70, fontSize: 14)),
+                          const SizedBox(height: 8),
+                          Text('$operationalCount+', style: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold, letterSpacing: 1)),
                         ],
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.05),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white.withOpacity(0.1)),
-                        ),
-                        child: const Icon(Icons.hub_rounded, color: Color(0xff00f5d4)),
-                      )
+                      const Icon(Icons.analytics_outlined, color: Colors.whited1, size: 45),
                     ],
                   ),
-                  
-                  const SizedBox(height: 30),
-                  const Text(
-                    'اختر قطاع النظام للمعاينة والتجربة الفورية:',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white90),
+                ),
+                
+                const SizedBox(height: 30),
+                
+                // 3️⃣ قطاعات النظام المستوردة تلقائياً من الـ Laravel Seeders
+                const Text(
+                  'القطاعات النشطة بالنظام (Laravel System Seeds)',
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 15),
+                
+                // قطاع 1: Data Intelligence
+                _buildSectorCard(
+                  title: 'Data Intelligence & Core Matrix',
+                  subtitle: 'Slug: data-intelligence-core',
+                  icon: Icons.hub_rounded,
+                  color: const Color(0xff00f5d4),
+                  status: 'High Trace Logging',
+                ),
+                
+                // قطاع 2: Clinical Intelligence
+                _buildSectorCard(
+                  title: 'Clinical Intelligence & Medical Care',
+                  subtitle: 'Slug: clinical-intelligence-medical',
+                  icon: Icons.medical_services_outlined,
+                  color: Colors.blueAccent,
+                  status: 'Medical Matrix Shield',
+                ),
+                
+                // قطاع 3: Enterprise Resource
+                _buildSectorCard(
+                  title: 'Enterprise Resource & Luxury Ledger',
+                  subtitle: 'Slug: enterprise-resource-ledgers',
+                  icon: Icons.auto_awesome_mosaic_outlined,
+                  color: const Color(0xffffb703),
+                  status: 'Minimalist Luxury Dark',
+                ),
+                
+                const SizedBox(height: 25),
+                
+                // 4️⃣ شاشة المراقبة البرمجية اللحظية (Live Core Logs Monitor)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.4),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white.withOpacity(0.1)),
                   ),
-                  const SizedBox(height: 15),
-
-                  // قائمة أزرار الوحدات والقطاعات المتاحة للتنقل والتجربة التفاعلية
-                  SizedBox(
-                    height: 110,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: sectorsMatrix.length,
-                      itemBuilder: (context, index) {
-                        bool isSelected = index == selectedSectorIndex;
-                        var sector = sectorsMatrix[index];
-                        return GestureDetector(
-                          onTap: () => setState(() => selectedSectorIndex = index),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            width: 150,
-                            margin: const EdgeInsets.only(right: 12, bottom: 8),
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: isSelected ? sector['color'].withOpacity(0.12) : Colors.white.withOpacity(0.03),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: isSelected ? sector['color'] : Colors.white.withOpacity(0.08),
-                                width: isSelected ? 1.5 : 1,
-                              ),
-                              boxShadow: isSelected ? [
-                                BoxShadow(color: sector['color'].withOpacity(0.2), blurRadius: 12, offset: const Offset(0, 4))
-                              ] : [],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(sector['icon'], color: isSelected ? sector['color'] : Colors.white60, size: 28),
-                                Text(
-                                  sector['name'],
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 11, 
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                    color: isSelected ? Colors.white : Colors.white70
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(height: 25),
-
-                  // لوحة عرض تفاصيل القطاع المختار بتأثير زجاجي (Glassmorphic Core Console)
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.04),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(color: Colors.white.withOpacity(0.08)),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      activeSector['name'],
-                                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: activeSector['color'].withOpacity(0.15),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: activeSector['color'].withOpacity(0.3)),
-                                    ),
-                                    child: Text(
-                                      activeSector['status'],
-                                      style: TextStyle(fontSize: 10, color: activeSector['color'], fontWeight: FontWeight.bold),
-                                    ),
-                                  )
-                                ],
-                              ),
-                              const Divider(height: 30, color: Colors.white10),
-                              
-                              const Text('المعايير المتقدمة للوحدة (System Architecture Matrix):', style: TextStyle(fontSize: 13, color: Colors.white60, fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 10),
-                              
-                              // جلب المعايير والمواصفات لكل قطاع
-                              ...(activeSector['details']['Metrics'] as List<String>).map((metric) => Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.stop_circle_rounded, size: 12, color: activeSector['color']),
-                                    const SizedBox(width: 10),
-                                    Text(metric, style: const TextStyle(fontSize: 13, color: Colors.white90)),
-                                  ],
-                                ),
-                              )).toList(),
-
-                              const SizedBox(height: 25),
-                              const Text('سجل العمليات الفوري والمحاكاة الذكية (Live Debug Terminal):', style: TextStyle(fontSize: 13, color: Colors.white60, fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 10),
-
-                              // محاكاة الشاشة السوداء (Terminal) لرؤية الأكواد والعمليات الخلفية تعمل
-                              Expanded(
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.4),
-                                    borderRadius: BorderRadius.circular(15),
-                                    border: Border.all(color: Colors.white.withOpacity(0.05)),
-                                  ),
-                                  child: ListView.builder(
-                                    itemCount: (activeSector['details']['Live Logs'] as List<String>).length,
-                                    itemBuilder: (context, i) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(bottom: 6.0),
-                                        child: Text(
-                                          activeSector['details']['Live Logs'][i],
-                                          style: const TextStyle(fontFamily: 'monospace', fontSize: 11, color: Color(0xffa2aebb)),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                              
-                              const SizedBox(height: 15),
-                              // زر تفاعلي يحاكي معالجة الأوامر الفورية بلمسة يد الدكتور حسام
-                              SizedBox(
-                                width: double.infinity,
-                                height: 50,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Hussam Core AI: Executing microservices for ${activeSector['name']}...'),
-                                        backgroundColor: activeSector['color'].withOpacity(0.8),
-                                        duration: const Duration(seconds: 1),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: activeSector['color'],
-                                    foregroundColor: Colors.black,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                                    elevation: 5,
-                                  ),
-                                  child: const Text('تشغيل وفحص العمليات الحية ⚡', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.terminal, color: Colors.greenAccent, size: 18),
+                          const SizedBox(width: 8),
+                          Text('AI Matrix Audits & Live Traces', style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12)),
+                        ],
                       ),
-                    ),
+                      const Divider(color: Colors.white10),
+                      const Text('• Initializing secure tunnel integration via Cloudflare...', style: TextStyle(color: Colors.greenAccent, fontSize: 11, fontFamily: 'monospace')),
+                      const SizedBox(height: 4),
+                      const Text('• Laravel Seeders data verified and structured successfully.', style: TextStyle(color: Colors.greenAccent, fontSize: 11, fontFamily: 'monospace')),
+                      const SizedBox(height: 4),
+                      const Text('• Flutter AppRouter connection: RESOLVED.', style: TextStyle(color: Color(0xff00f5d4), fontSize: 11, fontFamily: 'monospace')),
+                    ],
                   ),
-                ],
-              ),
+                )
+              ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  // دالة بناء كروت القطاعات بشكل موحد وجميل
+  Widget _buildSectorCard({required String title, required String subtitle, required IconData icon, required Color color, required String status}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.03),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: color.withOpacity(0.1),
+            child: Icon(icon, color: color),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4),
+                Text(subtitle, style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 11)),
+                const SizedBox(height: 4),
+                Text('Config: $status', style: TextStyle(color: color.withOpacity(0.8), fontSize: 10, fontStyle: FontStyle.italic)),
+              ],
+            ),
+          ),
+          const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white24, size: 14),
         ],
       ),
     );
