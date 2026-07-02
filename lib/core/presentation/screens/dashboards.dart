@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'ledger_view.dart'; // 🚀 تم ربط نظام المقاصة المالية اللحظية لـ Hussam Core AI هنا
 
 /// 🏪 لوحة تحكم التاجر الفاخرة (Luxury Merchant Dashboard)
 class MerchantDashboardScreen extends StatelessWidget {
@@ -7,6 +8,7 @@ class MerchantDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff090a0f),
       appBar: AppBar(
         title: const Text('MERCHANT CONTROL PANEL', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 1)),
         backgroundColor: const Color(0xff090a0f),
@@ -40,30 +42,57 @@ class MerchantDashboardScreen extends StatelessWidget {
             ),
             const SizedBox(height: 25),
             
-            // محفظة التاجر والعمليات الفاخرة (Luxury Ledger Base)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.02),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xff00f5d4).withOpacity(0.2)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('الرصيد المتاح (Luxury Ledger Balance)', style: TextStyle(color: Colors.white50, fontSize: 12)),
-                  const SizedBox(height: 5),
-                  const Text('4,750,000 YER', style: TextStyle(color: Color(0xff00f5d4), fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'monospace')),
-                  const Divider(color: Colors.white10, height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('مبيعات اليوم: +120,000 YER', style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12)),
-                      const Icon(Icons.trending_up_rounded, color: Colors.greenAccent, size: 16),
-                    ],
-                  )
-                ],
+            // ⚡ الكارت المالي التفاعلي المرتبط لحظياً بـ LedgerView
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LedgerView(userId: 1), // انتقال فوري وصاروخي لكشف الحساب والعمليات
+                  ),
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [const Color(0xff00f5d4).withOpacity(0.05), Colors.white.withOpacity(0.01)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xff00f5d4).withOpacity(0.25)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xff00f5d4).withOpacity(0.02),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('الرصيد المتاح (Luxury Ledger Balance)', style: TextStyle(color: Colors.white50, fontSize: 12)),
+                        const Icon(Icons.arrow_forward_ios_rounded, color: Color(0xff00f5d4), size: 12),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    const Text('4,750,000 YER', style: TextStyle(color: Color(0xff00f5d4), fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'monospace')),
+                    const Divider(color: Colors.white10, height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('مبيعات اليوم: +120,000 YER (اضغط للتفاصيل اللحظية)', style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12)),
+                        const Icon(Icons.trending_up_rounded, color: Colors.greenAccent, size: 16),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 25),
@@ -125,6 +154,7 @@ class CustomerDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff090a0f),
       appBar: AppBar(
         title: const Text('CUSTOMER PORTAL', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 1)),
         backgroundColor: const Color(0xff090a0f),
@@ -177,7 +207,7 @@ class CustomerDashboardScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.2), borderRadius: BorderRadius.circular(10)),
-                        child: const Text('Unit Clinic', style: TextStyle(color: Colors.blueScatter, fontSize: 9, fontWeight: FontWeight.bold)),
+                        child: const Text('Unit Clinic', style: TextStyle(color: Colors.blueAccent, fontSize: 9, fontWeight: FontWeight.bold)), // تم تصحيح اللون هنا ليعمل 100%
                       )
                     ],
                   ),
