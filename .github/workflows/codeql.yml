@@ -32,3 +32,5 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:javascript"
+          upload-database: false
+          wait-for-processing: false
