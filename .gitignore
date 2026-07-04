@@ -1,0 +1,17 @@
+# لارافيل وحفظ المفاتيح السرية
+/backend/.env
+/backend/vendor/
+/backend/node_modules/
+/backend/storage/*.key
+/backend/public/storage
+
+# فلاتر والملفات المؤقتة
+/flutter_client/.dart_tool/
+/flutter_client/.packages
+/flutter_client/.pub-cache/
+/flutter_client/build/
+
+# ملفات النظام والبيئة المحلية
+.env
+.DS_Store
+*.log
