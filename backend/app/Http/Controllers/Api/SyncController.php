@@ -52,30 +52,32 @@ class SyncController extends Controller
                     continue;
                 }
 
-                // Attempt insert; rely on unique constraint (tenant_id, request_id) to prevent duplicates
                 $now = now();
-                try {
-                    DB::table('ai_logs')->insert([
-                        'tenant_id' => $currentTenant->id,
-                        'event_at' => $now,
-                        'request_id' => $requestId,
-                        'model' => $item['model'] ?? null,
-                        'prompt' => is_array($item['prompt']) || is_object($item['prompt']) ? json_encode($item['prompt']) : ($item['prompt'] ?? null),
-                        'response' => isset($item['response']) ? json_encode($item['response']) : null,
-                        'cost' => $item['cost'] ?? 0.0,
-                        'region' => $item['region'] ?? null,
-                        'created_at' => $now,
-                    ]);
+                $payload = [
+                    'tenant_id' => $currentTenant->id,
+                    'event_at' => $now,
+                    'request_id' => $requestId,
+                    'model' => $item['model'] ?? null,
+                    'prompt' => is_array($item['prompt']) || is_object($item['prompt']) ? json_encode($item['prompt']) : ($item['prompt'] ?? null),
+                    'response' => isset($item['response']) ? json_encode($item['response']) : null,
+                    'cost' => $item['cost'] ?? 0.0,
+                    'region' => $item['region'] ?? null,
+                    'created_at' => $now,
+                ];
 
-                    $results[] = ['request_id' => $requestId, 'status' => 'created'];
-                } catch (\Exception $e) {
-                    // Handle unique violation (duplicate) vs other errors
-                    if ($this->isUniqueViolation($e)) {
-                        $results[] = ['request_id' => $requestId, 'status' => 'duplicate'];
+                // Use insertOrIgnore to avoid raising exceptions on duplicates — rely on DB constraint for idempotency.
+                try {
+                    $inserted = DB::table('ai_logs')->insertOrIgnore($payload);
+                    $wasInserted = ($inserted === 1 || $inserted === true);
+
+                    if ($wasInserted) {
+                        $results[] = ['request_id' => $requestId, 'status' => 'created'];
                     } else {
-                        Log::error('Sync item insert failed', ['tenant' => $currentTenant->id, 'error' => $e->getMessage(), 'item' => $item]);
-                        $results[] = ['request_id' => $requestId, 'status' => 'failed', 'error' => $e->getMessage()];
+                        $results[] = ['request_id' => $requestId, 'status' => 'duplicate'];
                     }
+                } catch (\Exception $e) {
+                    Log::error('Sync item insert failed', ['tenant' => $currentTenant->id, 'error' => $e->getMessage(), 'item' => $item]);
+                    $results[] = ['request_id' => $requestId, 'status' => 'failed', 'error' => $e->getMessage()];
                 }
             }
             DB::commit();
@@ -95,15 +97,6 @@ class SyncController extends Controller
             return (string) $user->tenant_id === (string) $tenantId;
         }
         if (method_exists($user, 'hasRole') && $user->hasRole('super-admin')) {
-            return true;
-        }
-        return false;
-    }
-
-    protected function isUniqueViolation(\Throwable $e): bool
-    {
-        $msg = $e->getMessage();
-        if (stripos($msg, 'duplicate key') !== false || stripos($msg, '23505') !== false || stripos($msg, 'unique') !== false) {
             return true;
         }
         return false;
