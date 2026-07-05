@@ -1,0 +1,12 @@
+# Composer requirements for backend (run in backend/ directory)
+
+Please run the following commands in the backend directory to install required packages for authentication and tenancy helpers:
+
+composer require laravel/sanctum
+
+# After installing, publish the sanctum configuration and migrations:
+# php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+
+# Run migrations
+# php artisan migrate
+
