@@ -1,44 +1,68 @@
-# ======================================================================
-# HUS CORE CONCEPTS SPECIFICATION
+======================================================================
+# HUS CORE CONCEPTS
+# Hussam Unified Specification (HUS DSL)
 # Version: 3.3
-# Status: Official & Binding
-# ======================================================================
-## 1. SEMANTIC DICTIONARY (القاموس الدلالي الحاكم)
-This document establishes the absolute architectural meaning of core concepts within Hussam Core AI. Any generated code (Laravel, Flutter, Go, etc.) that violates these structural models will trigger an immediate compiler block.
----
-### A. Domain (النطاق/القطاع الحاد)
-* **Definition**: A high-level, independent business capability of the platform (e.g., Identity, Accounting, Clinical, Logistics).
-* **Rule**: Every Domain is completely decoupled at the database and code level. Direct cross-domain database joins are strictly prohibited.
-### B. Namespace Isolation (عزل مساحات الأسماء)
-* **Definition**: The logical and structural boundary encapsulating a single Domain's logic.
-* **Code Target (Laravel)**: Isolated under `App\Domains\{DomainName}`.
-* **Constraint**: No Controller or Service inside `App\Domains\Clinical` may directly instantiate or call a Model from `App\Domains\Accounting`. Communication must pass exclusively through **Contracts (Interfaces)** or **Domain Events**.
-### C. Tenant (المستأجر)
-* **Definition**: The organizational or sovereign entity utilizing the system.
-* **The Single-Field Tenant Law (tenant_id Rule)**: Every operational table within the system MUST contain a unified column:
-    * `tenant_id`: UUID (Foreign Key targeting the global tenants registry).
-* **Exception**: Global system configurations or immutable static constants.
-### D. Aggregate Root (جذر التجميع)
-* **Definition**: A cluster of domain objects (Entities and Value Objects) that can be treated as a single unit for data changes. External objects can only hold references to the Aggregate Root.
-* **Rule**: All database transactions and persistence mechanisms operate solely through the Aggregate Root to guarantee transactional consistency boundaries.
-### E. Entity (الكيان التشغيلي)
-* **Definition**: A domain object defined by its unique identity rather than its attributes.
-* **Rule**: Must possess a unique structural identifier (`id` as UUIDv4) and its lifecycle is managed directly by its parent Aggregate Root.
-### F. Value Object (كائن القيم المجرد)
-* **Definition**: An object that measures, quantifies, or describes a characteristic of the domain, possessing no conceptual identity.
-* **The Anonymity Rule (قانون التجريد)**: Value Objects MUST NOT contain any unique identifier field (No `id`, no `uuid`). Equality is determined exclusively by the structural comparison of all its internal attributes combined.
-### G. Immutable Financial Ledger Strategy (دفتر القيد المزدوج الصارم)
-* **Definition**: The mandatory computational model for financial accounts. 
-* **Rule**: Balances are never updated using raw `UPDATE` SQL commands. Every financial transaction is an absolute, permanent, double-entry append-only record (Debit/Credit). Historical rows are structurally immutable.
-### H. Idempotency Core & Sync Strategy (نواة المزامنة الذكية)
-* **Definition**: The mechanism guaranteeing that local/remote operations can be executed multiple times without changing the final result.
-* **Rule**: The `ai_logs` and transaction tables enforce uniqueness using a mandatory `request_id` context. Data entry pipelines must use deterministic operations like `insertOrIgnore` or strict conflict resolution constraints to block duplicates.
----
-## 2. ARCHITECTURAL BOUNDARIES MATRIX
+# Status: Official - Semantic Dictionary
+======================================================================
 
-| Concept | Multi-Tenant Isolated? | Identity Type | Database Mutability | Communication Mode |
-| :--- | :--- | :--- | :--- | :--- |
-| **Aggregate Root** | Yes (`tenant_id`) | UUIDv4 | Mutable / Strict Versioning | Contracts / Events |
-| **Entity** | Inherited | UUIDv4 | Mutable via Root | Local Context Only |
-| **Value Object** | Inherited | **None (Anonymous)** | **Strictly Immutable** | Embedded Value |
-| **Ledger Row** | Yes (`tenant_id`) | UUIDv4 | **Strictly Append-Only** | Domain Event Trigger |
+## PURPOSE
+This document establishes the absolute, non-negotiable semantic definitions for all structural and domain components within the Hussam Unified Specification (HUS) ecosystem. Every compiler, generator, and AI engine must enforce these definitions strictly to prevent architectural drift.
+
+---
+
+## 01. CORE ARCHITECTURAL BOUNDARIES
+
+### DOMAIN
+* **Definition:** The highest-level business vertical within the platform representing a standalone ecosystem.
+* **Constraints:** Must operate with complete logical autonomy.
+* **Examples:** `Commerce`, `Accounting`, `Logistics`, `Clinical`.
+
+### MODULE
+* **Definition:** A functional subdomain or cohesive subsection encapsulated inside a specific Domain.
+* **Constraints:** Must not leak its inner logic directly to other modules outside its parent Domain.
+
+### NAMESPACE
+* **Definition:** The strict logical and directory-level isolation boundary enclosing a Domain and its Modules in both Backend (Laravel) and Frontend (Flutter).
+* **Law (Namespace Isolation):** Cross-namespace communication between different Domains is strictly prohibited at the Model/Data layer. Interaction must occur exclusively through **Contracts** or **Domain Events**.
+
+---
+
+## 02. DATA & SECURITY INFRASTRUCTURE
+
+### TENANT
+* **Definition:** The sovereign client or business entity that owns its data silo within the multi-tenant architecture.
+* **Law (tenant_id Rule):** Every operational Entity and Database Table must implicitly inject and enforce a `tenant_id` field defined strictly as a `UUID`. Global shared configurations or static system tables are the only exceptions.
+
+---
+
+## 03. DOMAIN-DRIVEN DESIGN (DDD) TAXONOMY
+
+### AGGREGATE
+* **Definition:** A cluster of domain objects (Entities and Value Objects) that can be treated as a single unit for data changes.
+* **Aggregate Root:** The primary Entity that binds the cluster and acts as the sole gateway for external interactions.
+
+### ENTITY
+* **Definition:** A domain object defined not by its attributes, but by a continuous thread of identity that persists across time.
+* **Constraints:** Must possess a unique identifier (`id` as `UUID`).
+
+### VALUE OBJECT
+* **Definition:** An object that describes a descriptive aspect of the domain with no conceptual identity of its own.
+* **Law (Value Object Anonymity):** It is strictly forbidden for a `value_object` to contain any unique identifier (`id`). Equality is determined solely by the structural value of its properties.
+
+---
+
+## 04. INTEGRATION & BEHAVIORAL COMPONENTS
+
+### CONTRACT
+* **Definition:** A strict, immutable interface definition that specifies the public API and data exchange format for a Bounded Context or Domain.
+* **Usage:** Used as the formal boundary checkpoint for any cross-domain request.
+
+### DOMAIN EVENT
+* **Definition:** An immutable, time-stamped record of a significant occurrence that took place within the domain.
+* **Constraints:** Broadcasted asynchronously to update other Bounded Contexts without coupling them.
+
+### SERVICE
+* **Definition:** A standalone operation or piece of business logic that belongs to the domain layer but does not naturally fit within the lifecycle of a specific Entity or Value Object.
+
+---
+======================================================================
