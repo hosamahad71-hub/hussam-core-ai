@@ -1,60 +1,42 @@
+# HUS COMPILER BOOTSTRAP PROTOCOL
+spec_version: 3.3
+mode: DETERMINISTIC
+state: STATELESS
+component: BOOTSTRAP_ENGINE
 
-# ======================================================================
-# HUS COMPILER BOOT PROTOCOL
-# Hussam Sovereign Specification Compiler (HUS DSL)
-# Phase 99 — Compiler Protocol — Step 00
-# Version: 3.3
-# Status: Official / Mandatory
-# ======================================================================
+## 1. PURPOSE
+This document establishes the absolute immutable boot sequence for the Hussam Specification Language (HUS DSL) Compiler Engine. It guarantees that the compiler environment is initialized without assumptions, external dependencies, or non-deterministic behaviors.
 
-## 1. PROTOCOL IDENTITY & INTENT
-This document defines the absolute, immutable boot sequencing rules for the Hussam Specification Language (HUS DSL) Compiler. Before any parsing, abstract syntax tree (AST) generation, or artifact compilation occurs, the compiler environment MUST verify its integrity and execute the bootstrapping protocol sequentially. Any deviation or failure during this phase results in an immediate architectural panic.
+## 2. STRICT BOOT SEQUENCE (بروتوكول الإقلاع الحتمي)
+The bootloader must execute the following sequence sequentially. Any failure in any step must immediately halt execution and trigger a fatal system panic.
 
----
+### STEP 01: Core Initialization & Constitution Check
+- The engine must locate and load `HUS/00_PLATFORM_CONSTITUTION.md`.
+- It must parse the fundamental platform constraints and enforce them as global immutables.
+- **Violation:** If the constitution file is missing, empty, or unreadable, the compiler must halt immediately with error code: `HUS_ERR_BOOT_MISSING_CONSTITUTION`.
 
-## 2. EXECUTION ENVIRONMENT CONFIGURATION
-The compiler execution context must be hard-coded to enforce the following constraints during the boot lifecycle:
-- **MODE:** DETERMINISTIC (Non-random execution paths)
-- **STATE:** STATELESS (No caching or residual memory between separate compilations)
-- **TEMPERATURE:** 0.0 (Zero cognitive or generative creativity)
-- **CONTEXT PRIORITY:** HUS SPECIFICATIONS ALWAYS WIN (Absolute precedence over target frameworks like Laravel, Flutter, or PostgreSQL)
+### STEP 02: Index Mapping & Load Order Verification
+- The engine must load `HUS/INDEX.md` to map the official architectural execution pipeline.
+- It verifies that the current repository contains all mandatory directories and paths defined in the index.
+- **Violation:** If the index is missing or contains structural mismatch, halt immediately with error code: `HUS_ERR_BOOT_INVALID_INDEX`.
 
----
+### STEP 03: Language Spec Subsystem Verification
+- The engine prepares the compiler to safely transition to Phase 02 (Language and Grammar Rules).
+- It verifies that `HUS/SPEC_LANGUAGE/` exists and contains the complete specification files (00_GRAMMAR to 04_VERSIONING).
+- **Violation:** Failure to verify the language path triggers error code: `HUS_ERR_BOOT_LANGUAGE_PATH_VIOLATION`.
 
-## 3. SEQUENTIAL BOOTSTRAPPING LIFECYCLE (THE 4-STEP INITIALIZATION)
+## 3. COMPILER-LEVEL BOOT LAWS
+### 3.1 Zero-Assumption Boot Constraint
+- The compiler engine must start with an empty semantic memory state. No caching of previous compilation states or heuristics is permitted.
+- Temperature settings must be forced to absolute zero (`TEMPERATURE = 0`).
 
-The compiler must execute the following setup phases in strict incremental order:
+### 3.2 Framework and Environment Isolation
+- External runtime environment variables, framework definitions (Laravel, Flutter), or platform targets must not affect the boot sequence. HUS rules are completely sovereign.
 
-### STEP 01: WORKSPACE ROOT VERIFICATION
-- The compiler must scan the current execution context to confirm the existence of the sovereign root directory: `/HUS`.
-- If the directory `/HUS` is absent or inaccessible, the boot sequence must halt.
-- **Panic Code:** `HUS_ERR_BOOT_ROOT_MISSING`
+## 4. FATAL BOOT ERROR CODES
+- `HUS_ERR_BOOT_MISSING_CONSTITUTION`: Core compiler pipeline halted. Failed to load the absolute single source of truth and foundational constraints.
+- `HUS_ERR_BOOT_INVALID_INDEX`: The HUS loading order index is corrupted or out of synchronization.
+- `HUS_ERR_BOOT_LANGUAGE_PATH_VIOLATION`: The language rule folder cannot be resolved by the bootloader.
 
-### STEP 02: PLATFORM CONSTITUTION INJECTION
-- The compiler must load and parse `HUS/00_PLATFORM_CONSTITUTION.md` into memory as the ultimate legal and technical constraint layer.
-- All subsequent architectural generations must be dynamically evaluated against the rules defined in the constitution (e.g., Tenant Isolation, Value Object Anonymity, Namespace Isolation).
-- If the constitution file is missing or empty, execution terminates instantly.
-- **Panic Code:** `HUS_ERR_BOOT_CONSTITUTION_MISSING`
-
-### STEP 03: INDEX REFERENCE MAP LOADING
-- The compiler must read `HUS/INDEX.md` to establish the exact deterministic loading order of all specifications.
-- Any specification file found in the workspace that is not cataloged in `HUS/INDEX.md` must be treated as untrusted and ignored.
-- **Panic Code:** `HUS_ERR_BOOT_INDEX_INVALID`
-
-### STEP 04: SOVEREIGN LANGUAGE SPECIFICATION INJECTION
-- The compiler must sequentially load the structural and syntax specifications from the language core directory:
-  1. `HUS/SPEC_LANGUAGE/00_GRAMMAR.md`
-  2. `HUS/SPEC_LANGUAGE/01_SCHEMA.md`
-  3. `HUS/SPEC_LANGUAGE/02_KEYWORDS.md`
-  4. `HUS/SPEC_LANGUAGE/03_VALIDATION_RULES.md`
-  5. `HUS/SPEC_LANGUAGE/04_VERSIONING.md`
-- If any of these files fail structural or version integrity checks, the compiler must emit a severe compilation exception and refuse to initialize the parsing pipeline.
-- **Panic Code:** `HUS_ERR_BOOT_LANGUAGE_INCOMPLETE`
-
----
-
-## 4. INTEGRITY CHECK & SUCCESS CRITERIA
-The boot sequence is considered successfully completed only when:
-1. All 4 steps return an exit status of `0` (SUCCESS).
-2. The compilation context flags `COMPILER_READY = TRUE`.
-3. Memory state is cleared of any intermediate boot artifacts, transitioning control directly to `HUS/99_COMPILER_PROTOCOL/01_PARSER.md`.
+## 5. PIPELINE NEXT STEP
+Once the boot protocol successfully terminates, control is passed directly to the Parser Subsystem in `HUS/99_COMPILER_PROTOCOL/01_PARSER.md` to begin tokenization and syntax validation.
