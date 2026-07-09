@@ -1,55 +1,61 @@
 ======================================================================
-# HUS CODE GENERATION PROTOCOL
-# Phase 99 — Compiler Protocol / STEP 05
-# Version: 3.3 | Status: IMMUTABLE
+# HUS SOVEREIGN SPECIFICATION COMPILER
+# Phase 99 — Compiler Protocol: 05_GENERATOR.md
+# Version: 3.3
+# Status: Mandated
+# Execution Mode: DETERMINISTIC | ZERO-ASSUMPTIONS
 # ======================================================================
 
-## 1. PURPOSE & MANDATE
-This protocol governs the deterministic translation of the Contract-Injected Abstract Syntax Tree (AST) into concrete, target-specific executable source code (Laravel Backend & Flutter Frontend). The generation layer is strictly a "dumb mapper"—it is forbidden from introducing logic, optimizations, or structural variations not explicitly authorized by the verified AST.
+## 1. PURPOSE
+This protocol defines the strict architectural laws governing the generation layer of the HUS Compiler. It dictates how the Contract-Injected Abstract Syntax Tree (AST) is mechanically mapped and translated into concrete target source code (Laravel Backend, Flutter Frontend, PostgreSQL DDL) without introducing external drift, implicit assumptions, or structural deviations.
 
 ---
 
-## 2. INPUT & OUTPUT SPECIFICATION
-* **Absolute Input:** Contract-Injected AST verified by `HUS/99_COMPILER_PROTOCOL/04_CONTRACT_INJECTOR.md`.
-* **Primary Output:** Target Artifact Bundles (SQL Migrations, Laravel Controllers/Models, Flutter BLoC/Repositories).
+## 2. INPUT & BOUNDARY PARAMETERS
+- **Absolute Input:** The fully resolved, validated, and contract-injected AST produced exclusively by `04_CONTRACT_INJECTOR.md`.
+- **Target Profiles:** Loaded strictly from the target configuration manifest. No default or implicit framework assumptions are permitted.
+- **State Preservation:** The generator operates in a completely stateless loop. It is strictly forbidden from optimizing or modifying business logic during translation.
 
 ---
 
-## 3. TARGET-SPECIFIC GENERATION LAWS
+## 3. TARGET CODE GENERATION MATRIX LAWS
 
-### 3.1 Backend Generation Rules (Laravel & PostgreSQL)
-1. **Tenant Enforcement:** Every operational table migration generated MUST include the column `tenant_id UUID NOT NULL` linked via foreign key to the global tenants system, backed by a composite index `PRIMARY KEY (id, tenant_id)`.
-2. **Namespace Segregation:** Code files must be partitioned into strict domain paths:
-   * `App\Domains\<DomainName>\Models\`
-   * `App\Domains\<DomainName>\Http\Controllers\`
-3. **Idempotency Integration:** Financial and transactional endpoints must automatically embed a request-deduplication check against `ai_logs` via the incoming `request_id` header using `insertOrIgnore`.
+### 3.1 Backend Target (Laravel Ecosystem)
+- **Model Isolation:** Every generated Eloquent Model belonging to an operational domain MUST explicitly incorporate the `tenant_id` UUID field within its `$fillable` array or enforce a global tenant scope.
+- **Mass Assignment Guarding:** Code generation MUST explicitly lock models against mass assignment vulnerabilities (`protected $guarded = ['id'];` or strictly defined `$fillable`).
+- **Controller Immutability:** Generated controllers (e.g., `TransactionController`) must implement exact request validation classes (`FormRequest`) derived mechanically from the AST Schema. Custom inline modifications by the engine are rejected.
 
-### 3.2 Frontend Generation Rules (Flutter & Dart)
-1. **Value Object Immutability:** Generated Value Objects must utilize `@immutable` annotations and lack any standalone internal `id` field.
-2. **BLoC State Rigidity:** States generated for feature components must explicitly subclass a sealed base state structure to prevent unexpected application state drift.
+### 3.2 Frontend Target (Flutter Ecosystem)
+- **Data Layer Invariance:** Generated Dart data models MUST be strictly immutable (`@immutable` or using final fields).
+- **Serialization Safety:** Every model MUST generate deterministic `fromJson` and `toJson` methods. Missing schema fields must trigger immediate compilation failure rather than defaulting to dynamic or nullable types unless explicitly specified.
+- **State Management:** BLoC states and events must map 1:1 with the Domain Events and Integration Contracts defined in the AST.
 
----
-
-## 4. PIPELINE SEQUENCING & TRANSITION
-1. **Execution Block:** The code generation layer fires unconditionally after contract injection confirmation.
-2. **Next Sequence:** Upon successful writing of all target streams without validation leakage, the compiler engine transitions mechanically to **HUS/99_COMPILER_PROTOCOL/06_INPUT_MANIFEST.md**.
+### 3.3 Database DDL Target (PostgreSQL)
+- **Tenant Indexing:** Every table generated under an operational domain context MUST feature a composite index combining `tenant_id` and the primary or foreign keys to ensure optimized isolation.
+- **Idempotency Logging:** The generator must inject schema structures for tracking `request_id` within the `ai_logs` structure for every data-mutating transaction.
 
 ---
 
-## 5. GENERATOR-LEVEL ERROR BLOCKAGE SCHEMAS
-Any structural deviation or compliance leakage during the code emit process will instantly drop a fatal compilation blockage.
+## 4. COMPILER-LEVEL GENERATION BLOCKAGE RULES
+
+Any violation of these structural mapping laws will instantly abort the compilation pipeline and throw a fatal generation error block:
 
 
 ```
 # ======================================================================
-HUS ARCHITECTURAL COMPILER ERROR: GENERATION COLLAPSE
+HUS ARCHITECTURAL COMPILER ERROR: GENERATOR BLOCKAGE
 [ERROR CODE]  : <HUS_ERR_GENERATOR_X>
-[FILE PATH]   : [Target Artifact Stream Context]
-[AST NODE]    : <The offending Domain/Model/Entity Component>
-[VIOLATION]   : <Explanation of generation divergence or constraint breach>
+[FILE PATH]   : [AST NODE / TARGET PATH]
+[VIOLATION]   : <Clear definition of the translation drift>
 ```
 
-### OFFICIAL COMPILER GENERATOR ERROR CODES:
-* `HUS_ERR_GENERATOR_CREATIVE_DRIFT`: Triggered if the generator attempts to emit fields, methods, or logic frames not specified in the input AST.
-* `HUS_ERR_GENERATOR_TENANT_STRIP`: Fatal blockage triggered if a generated operational database migration drops the mandatory `tenant_id` structural rule.
-* `HUS_ERR_GENERATOR_TARGET_MISMATCH`: Triggered if the selected target mapping strategy fails to comply with the structural boundaries of the language specs.
+### OFFICIAL GENERATOR ERROR CODES:
+- `HUS_ERR_GENERATOR_TENANT_ID_DROPPED`: Triggered if the generator attempts to write a database migration or backend model for an operational context without emitting the mandatory `tenant_id: uuid` field.
+- `HUS_ERR_GENERATOR_VALUE_OBJECT_MUTABILITY`: Triggered if the generator emits code that allows a Value Object to expose a unique identification key (`id`) or mutate its internal state after instantiation.
+- `HUS_ERR_GENERATOR_UNAUTHORIZED_FRAMEWORK_DRIFT`: Triggered if the engine injects arbitrary framework-specific design patterns, external library helpers, or structural assumptions not defined in the source HUS specifications.
+
+---
+
+## 5. PIPELINE SEQUENCING
+
+The output of this generator consists of the verified, uncompiled source code artifacts written directly to the target environment directories. Upon completion of file emission, the compiler pipeline advances mechanically and unconditionally to the loading of execution manifests in **HUS/99_COMPILER_PROTOCOL/06_INPUT_MANIFEST.md**.
