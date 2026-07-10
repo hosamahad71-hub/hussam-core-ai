@@ -1,0 +1,26 @@
+name: Hussam Core AI - Sandbox & Audit Launch
+
+# القادح السحري الذي يتيح لك تشغيل الإطلاق يدوياً بضغطة زر من الموقع
+on:
+  workflow_dispatch:
+
+jobs:
+  sandbox_simulation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. سحب شفرة المنصة كاملة بداخل الخادم السحابي لـ GitHub
+      - name: Checkout Core Repository Code
+        uses: actions/checkout@v4
+
+      # 2. تهيئة بيئة تشغيل PHP للفحص المحاسبي
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      # 3. تشغيل محرك الفحص الجنائي العميق واستعراض النتائج حية
+      - name: Launch Deep System Audit Engine
+        run: |
+          chmod +x deep_system_audit.sh
+          ./deep_system_audit.sh
